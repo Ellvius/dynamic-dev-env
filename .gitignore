@@ -1,0 +1,64 @@
+# Node.js dependencies (if using Express.js)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python dependencies (if using Flask)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Docker-related files
+docker-compose.override.yml
+*.dockerfile
+docker-data/
+docker-cache/
+.dockerignore
+
+# Logs and runtime files
+logs/
+*.log
+*.out
+*.err
+*.pid
+*.seed
+*.lock
+
+# NGINX related files (optional)
+nginx/cache/
+nginx/logs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
+
+# System-specific files
+Thumbs.db
+desktop.ini
+
+# Secrets and credentials (make sure not to commit API keys!)
+.env
+*.pem
+*.crt
+*.key
+
+# Generated files and build artifacts
+dist/
+build/
+*.tar.gz
+*.zip
+
+# Database files (if using SQLite for session management)
+*.sqlite
+*.sqlite3
+db.sqlite
+db.sqlite3
