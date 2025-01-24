@@ -1,4 +1,4 @@
-import { startContainer, stopContainer, createCodeContainer } from './services/dockerService.js';
+import { startContainer, stopContainer, createCodeContainer } from './services/dockerImage.js';
 
 // // Test starting a container with a Node.js environment
 // startContainer('node:14', 'dev-container-1', '8080').then(container => {
