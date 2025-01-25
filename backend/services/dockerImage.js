@@ -1,4 +1,4 @@
-import { logger } from '../utils/logger.js';
+import path from 'path';
 import docker from '../config/dockerClient.js';
 
 export const checkImageExists = async (imageName) => {
@@ -13,37 +13,45 @@ export const checkImageExists = async (imageName) => {
 
 
 export const buildImage = async (imageName, dockerfileDir) => {
-    try {
-      console.log(`Building image: ${imageName}`);
-  
-      const stream = await docker.buildImage({
-        context: dockerfileDir, 
-        src: ['.'], 
-      }, {
-        t: imageName, 
-      });
-  
+  try {
+      console.log(`Building image: ${imageName} from ${dockerfileDir}`);
+
+      const stream = await docker.buildImage(
+          { context: dockerfileDir, src: ['.'] },
+          { t: imageName }
+      );
+
       await new Promise((resolve, reject) => {
-        docker.modem.followProgress(stream, (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-        });
+          docker.modem.followProgress(
+              stream,
+              (err, res) => {
+                  if (err) {
+                      reject(err);
+                  } else {
+                      resolve(res);
+                  }
+              },
+              (event) => {
+                  if (event.stream) {
+                      process.stdout.write(event.stream); // Print logs in real-time
+                  } else if (event.error) {
+                      console.error(event.error);
+                  }
+              }
+          );
       });
-  
+
       console.log(`Image ${imageName} built successfully.`);
-    } catch (err) {
+  } catch (err) {
       console.error(`Error building image ${imageName}:`, err);
-    }
-  };
+  }
+};
 
 
 export const buildImages = async (dockerfileDirs) => {
     for (const dockerfileDir of dockerfileDirs) {
       const imageName = path.basename(dockerfileDir);
-  
+      console.log(imageName);
       const imageExists = await checkImageExists(imageName);
   
       if (!imageExists) {
@@ -55,52 +63,3 @@ export const buildImages = async (dockerfileDirs) => {
   };
   
 
-export const startContainer = async (image, containerName, port) => {
-  try {
-    const container = await docker.createContainer({
-      Image: image,
-      name: containerName,
-      ExposedPorts: {
-        '80/tcp': {} 
-      },
-      HostConfig: {
-        PortBindings: {
-          '80/tcp': [
-            {
-              HostPort: port,  
-            },
-          ],
-        },
-      },
-    });
-    
-    await container.start();
-    logger.info(`Container ${containerName} started`);
-    return container;
-  } catch (error) {
-    logger.error(`Error starting container: ${error.message}`);
-    throw error;
-  }
-};
-
-export const stopContainer = async (containerName) => {
-  try {
-    const container = docker.getContainer(containerName);
-    await container.stop();
-    // await container.remove();
-    logger.info(`Container ${containerName} stopped and removed`);
-  } catch (error) {
-    logger.error(`Error stopping container: ${error.message}`);
-    throw error;
-  }
-};
-
-export const listContainers = async () => {
-  try {
-    const containers = await docker.listContainers();
-    return containers;
-  } catch (error) {
-    logger.error(`Error listing containers: ${error.message}`);
-    throw error;
-  }
-};
