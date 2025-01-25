@@ -1,4 +1,19 @@
-import { listContainers } from "./services/dockerContainer.js";
-import { startContainer } from "./services/dockerContainer.js";
-listContainers();
-const containername = startContainer('node-dev', 'test4', 8080, "5000");
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Define __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PATH = path.resolve(__dirname);
+console.log('Resolved path:', PATH);
+
+const DOCKERFILES_DIR = path.join(PATH, './dockerfiles');
+
+// Correctly construct paths for dockerfile directories
+export const dockerfileDirs = [
+    path.join(DOCKERFILES_DIR, 'node-dev'),
+];
+
+console.log('Dockerfile directories:', dockerfileDirs);

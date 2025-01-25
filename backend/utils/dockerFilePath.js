@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const PATH = path.resolve(__dirname);
 console.log('Resolved path:', PATH);
 
-const DOCKERFILES_DIR = path.join(PATH, '../../dockerfiles');
+const DOCKERFILES_DIR = path.join(PATH, '../dockerfiles');
 
 // Correctly construct paths for dockerfile directories
 export const dockerfileDirs = [
