@@ -14,6 +14,7 @@ const DOCKERFILES_DIR = path.join(PATH, '../dockerfiles');
 // Correctly construct paths for dockerfile directories
 export const dockerfileDirs = [
     path.join(DOCKERFILES_DIR, 'node-dev'),
+    path.join(DOCKERFILES_DIR,'python-dev'),
 ];
 
 console.log('Dockerfile directories:', dockerfileDirs);
