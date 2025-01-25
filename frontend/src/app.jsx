@@ -2,41 +2,32 @@ import axios from 'axios';
 
 function App() {
 
-  const  handleNodeClick = async () => {
-    const response = await axios.get('http://localhost:5000/start-container', {
-        dev: "node-dev"
-    });
-    if (response.data.redirectUrl) {
-      // window.location.href = response.data.redirectUrl;
-      window.open(response.data.redirectUrl, '_blank') ;
-    }
-  }
-
-  const  handlePythonClick = async () => {
-    const response = await axios.get('http://localhost:5000/start-container', {
-        dev: 'python-dev'
-    });
-    if (response.data.redirectUrl) {
-      // window.location.href = response.data.redirectUrl;
-      window.open(response.data.redirectUrl, '_blank') ;
-    }
-  }
-
-  const  handleCppClick = async () => {
-    const response = await axios.get('http://localhost:5000/start-container', {
-        dev: 'cpp-dev'
-    });
-    if (response.data.redirectUrl) {
-      // window.location.href = response.data.redirectUrl;
-      window.open(response.data.redirectUrl, '_blank') ;
-    }
-  }
+    const handleClick = async (devName) => {
+        try {
+          const newTab = window.open("", "_blank");
+          if (newTab) {
+            newTab.document.write("<h1>Setting up your development environment...</h1>");
+          }
+      
+          const response = await axios.get('http://localhost:5000/start-container', {
+            params: { dev: devName }
+          });
+      
+          if (response.data.redirectUrl) {
+            const url = response.data.redirectUrl;
+      
+                newTab.location.href = url;
+          }
+        } catch (error) {
+          console.error("Error starting container:", error);
+        }
+      };
 
   return (
     <div className="App">
-      <button className='Node' onClick={handleNodeClick}>Node</button>
-      <button className='Python' onClick={handlePythonClick}>Python</button>
-      <button className='Cpp' onClick={handleCppClick}>Cpp</button>
+      <button className='Node' onClick={() => handleClick("node-dev")}>Node</button>
+      <button className='Python' onClick={() => handleClick("python-dev")}>Python</button>
+      <button className='Cpp' onClick={() => handleClick("cpp-dev")}>Cpp</button>
     </div>
   );
 }
