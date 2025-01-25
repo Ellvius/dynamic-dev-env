@@ -3,7 +3,7 @@ import { findAvailablePort } from "../utils/availablePort.js";
 
 export const startnewContainer = async (req, res) => {
   const username = req.body.username|| 'lishin';
-  const dev = req.body.dev || 'node-dev';
+  const dev = req.query.dev || 'python-dev';
   try {
     const dynamicPort = await findAvailablePort(); 
     await startContainer(dev, `${username}-${dev}-${dynamicPort}`, 8080, dynamicPort); 

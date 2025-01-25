@@ -20,8 +20,22 @@ RUN mkdir -p /root/.config/code-server && \
 RUN pip install --upgrade pip \
     && pip install flask numpy pandas
 
-# Step 5: Expose the port for code-server
+# Step 5: Add a default project template
+RUN mkdir -p /workspace/project && \
+    echo "print('Hello, Python Dev!')" > /workspace/project/main.py && \
+
+# Step 6: Configure Code-Server Theme (Dark Theme)
+RUN mkdir -p /root/.local/share/code-server/User && \
+    echo '{ \
+      "workbench.colorTheme": "Default Dark+", \
+      "editor.fontSize": 14, \
+      "window.zoomLevel": 1, \
+      "terminal.integrated.fontSize": 14 \
+    }' > /root/.local/share/code-server/User/settings.json
+
+
+# Step 7: Expose the port for code-server
 EXPOSE 8080
 
-# Step 6: Start code-server
-CMD ["code-server", "--auth", "password", "--bind-addr", "0.0.0.0:8080"]
+# Step 8: Start code-server and open the predefined workspace
+CMD ["code-server", "--auth", "password", "--bind-addr", "0.0.0.0:8080", "/workspace/project/"]

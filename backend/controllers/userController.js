@@ -106,3 +106,16 @@ export const removeWorkSpace = async (req, res) => {
   }
 };
 
+export const getWorkSpaces = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    const foundUser = await User.findOne({ username });
+    if (!foundUser) return res.status(404).json({ message: "Username does not exist." });
+
+    return res.status(200).json({workspaces: foundUser.workspaces });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+}
+
