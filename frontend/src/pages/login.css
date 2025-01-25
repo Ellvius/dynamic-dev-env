@@ -1,0 +1,93 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #2c3e50, #34495e); /* Dark Blue to Gray Gradient */
+    color: #ecf0f1; /* Light text for contrast */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+
+  .logincontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  
+  .logincard {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px;
+  }
+  
+  
+  .logincard h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #34495e;
+  }
+  
+
+  .inputgroups {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .inputgroups label {
+    display: block;
+    font-size: 1rem;
+    color: #34495e;
+    margin-bottom: 5px;
+  }
+  
+
+  .inputgroups input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    background-color: #ecf0f1;
+    color: #34495e;
+    box-sizing: border-box;
+  }
+  
+  .inputgroups input:focus {
+    border-color: black;
+    outline: none;
+  }
+  
+
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    background-color:green;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #2980b9;
+  }
+  
+  
+  
+  
+  
