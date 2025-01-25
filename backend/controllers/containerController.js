@@ -1,37 +1,52 @@
-import app from "../app.js";
 import { startContainer } from "../services/dockerContainer.js";
 import { findAvailablePort } from "../utils/availablePort.js";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import net from "net";
 
 export const startnewContainer = async (req, res) => {
   try {
-    const dynamicPort = await findAvailablePort(); // Dynamically find an available port
-    await startContainer('node-dev', 'test-2', 8080, dynamicPort); // Start the container with the dynamic port
+    const dynamicPort = await findAvailablePort(); // Find an available port
+    await startContainer("node-dev", `test-${dynamicPort}`, 8080, dynamicPort); // Start the container with the dynamic port
+
+    console.log(`Waiting for container to be ready at http://localhost:${dynamicPort}...`);
+
+    // Wait for the container to start listening on the assigned port
+    await waitForPort(dynamicPort);
+
+    console.log(`Container is now running at http://localhost:${dynamicPort}`);
     
-    console.log(`Container started at http://localhost:${dynamicPort}`);
-
-    // Set up the proxy middleware dynamically for CORS handling
-    app.use('/dev-container', createProxyMiddleware({
-      target: `http://localhost:${dynamicPort}`, // Target the dynamic port of the container
-      changeOrigin: true,
-      pathRewrite: { '^/dev-container': '' },
-      onProxyReq: (proxyReq, req, res) => {
-        // You can add any custom headers here if needed
-        proxyReq.setHeader('Access-Control-Allow-Origin', '*');
-        proxyReq.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        proxyReq.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-      },
-      onProxyRes: (proxyRes, req, res) => {
-        // Ensure the response includes the correct CORS headers
-        proxyRes.headers['Access-Control-Allow-Origin'] = '*';
-        proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
-        proxyRes.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
-      },
-    }));
-
-    res.redirect(`http://localhost:${dynamicPort}`); // Redirect to the dynamic port
+    res.redirect(`http://localhost:${dynamicPort}`); // Redirect only after container is ready
   } catch (error) {
-    console.error('Error starting container:', error);
-    res.status(500).send('Error starting container');
+    console.error("Error starting container:", error);
+    res.status(500).send("Error starting container");
   }
+};
+
+// Utility function to wait until the port is available
+const waitForPort = (port, host = "localhost", timeout = 20000) => {
+  return new Promise((resolve, reject) => {
+    const startTime = Date.now();
+
+    const checkPort = () => {
+      const socket = new net.Socket();
+      socket.setTimeout(1000);
+
+      socket.on("connect", () => {
+        socket.destroy();
+        resolve();
+      });
+
+      socket.on("error", () => {
+        socket.destroy();
+        if (Date.now() - startTime > timeout) {
+          reject(new Error(`Timeout waiting for port ${port}`));
+        } else {
+          setTimeout(checkPort, 500); // Retry every 500ms
+        }
+      });
+
+      socket.connect(port, host);
+    };
+
+    checkPort();
+  });
 };
