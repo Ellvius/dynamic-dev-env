@@ -1,7 +1,7 @@
 import { logger } from '../utils/logger.js';
 import docker from '../config/dockerClient.js';
 
-export const makeContainer = async (image, containerName, containerPort, hostPort) => {
+export const startContainer = async (image, containerName, containerPort, hostPort) => {
     try {
         hostPort = String(hostPort);
         const container = await docker.createContainer({
@@ -21,7 +21,7 @@ export const makeContainer = async (image, containerName, containerPort, hostPor
         },
       });
 
-      // await container.start();
+      await container.start();
       logger.info(`Container ${containerName} started with port ${hostPort}`);
       return container;
     } catch (error) {
@@ -35,31 +35,10 @@ export const makeContainer = async (image, containerName, containerPort, hostPor
     try {
       const container = docker.getContainer(containerName);
       await container.stop();
-      logger.info(`Container ${containerName} stopped`);
+      // await container.remove();
+      logger.info(`Container ${containerName} stopped and removed`);
     } catch (error) {
       logger.error(`Error stopping container: ${error.message}`);
-      throw error;
-    }
-  };
-
-  export const startContainer = async (containerName) => {
-    try {
-      const container = docker.getContainer(containerName);
-      await container.start();
-      logger.info(`Container ${containerName} started`);
-    } catch (error) {
-      logger.error(`Error starting container: ${error.message}`);
-      throw error;
-    }
-  }
-
-  export const deleteContainer = async (containerName) => {
-    try {
-      const container = docker.getContainer(containerName);
-      await container.remove();
-      logger.info(`Container ${containerName} removed`);
-    } catch (error) {
-      logger.error(`Error removing container: ${error.message}`);
       throw error;
     }
   };
@@ -84,7 +63,7 @@ export const makeContainer = async (image, containerName, containerPort, hostPor
         const dynamicPort = await findAvailablePort(); 
         const containerName = `${username}-${devEnv}-${dynamicPort}`; 
   
-        await makeContainer(devEnv, containerName, 8080, dynamicPort); 
+        await startContainer(devEnv, containerName, 8080, dynamicPort); 
         console.log(`Created container: ${containerName} on port ${dynamicPort}`);
   
         

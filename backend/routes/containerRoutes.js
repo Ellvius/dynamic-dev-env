@@ -1,9 +1,9 @@
 import express from 'express';
-import { startnewContainer, initializeContainers } from '../controllers/containerController.js';
+import { startnewContainer } from '../controllers/containerController.js';
 
 const containerRoutes = express.Router();
 
 containerRoutes.get('/start-container', startnewContainer);
-containerRoutes.get('/', initializeContainers);
+// containerRoutes.get('/', initializeContainers);
 
 export default containerRoutes;
