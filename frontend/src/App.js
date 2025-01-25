@@ -3,10 +3,11 @@ import axios from 'axios';
 
 function App() {
 
-  const handleClick = () => {
-    axios.get("http://localhost:3000/start-container")
-      .then(() => console.log("Successfully start container."))
-      .catch((err) => console.log(err));
+  const  handleClick = async () => {
+    const response = await axios.get("http://localhost:5000/start-container")
+    if (response.data.redirectUrl) {
+      window.location.href = response.data.redirectUrl; // Redirect the browser
+    }
   }
 
   return (

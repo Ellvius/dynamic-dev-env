@@ -10,11 +10,11 @@ export const startnewContainer = async (req, res) => {
     console.log(`Waiting for container to be ready at http://localhost:${dynamicPort}...`);
 
     // Wait for the container to start listening on the assigned port
-    await waitForPort(dynamicPort);
+    //await waitForPort(dynamicPort);
 
     console.log(`Container is now running at http://localhost:${dynamicPort}`);
     
-    res.redirect(`http://localhost:${dynamicPort}`); // Redirect only after container is ready
+    res.json({ redirectUrl: `http://localhost:${dynamicPort}` }); // Redirect only after container is ready
   } catch (error) {
     console.error("Error starting container:", error);
     res.status(500).send("Error starting container");
@@ -22,31 +22,3 @@ export const startnewContainer = async (req, res) => {
 };
 
 // Utility function to wait until the port is available
-const waitForPort = (port, host = "localhost", timeout = 20000) => {
-  return new Promise((resolve, reject) => {
-    const startTime = Date.now();
-
-    const checkPort = () => {
-      const socket = new net.Socket();
-      socket.setTimeout(1000);
-
-      socket.on("connect", () => {
-        socket.destroy();
-        resolve();
-      });
-
-      socket.on("error", () => {
-        socket.destroy();
-        if (Date.now() - startTime > timeout) {
-          reject(new Error(`Timeout waiting for port ${port}`));
-        } else {
-          setTimeout(checkPort, 500); // Retry every 500ms
-        }
-      });
-
-      socket.connect(port, host);
-    };
-
-    checkPort();
-  });
-};
