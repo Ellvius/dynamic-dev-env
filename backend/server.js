@@ -1,16 +1,11 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
 import app from './app.js'; 
-import { buildImages } from './services/dockerImage.js';
-import { dockerfileDirs } from './utils/dockerFilePath.js';
+import dotenv from 'dotenv';
 
 dotenv.config();
-const port = process.env.PORT || 5000;
-buildImages(dockerfileDirs);
 
-app.use(cors());
-app.use(express.json());
+const port = process.env.PORT || 5000;
+
+// startContainer('node-dev', 'test-3', 8080, 8090);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
